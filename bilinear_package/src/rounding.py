@@ -1,6 +1,7 @@
 import typing
 import numpy as np
-from bilinear_package.src import orthogonalize, contraction, primitives, random_tensor
+from bilinear_package.src import orthogonalize, contraction, primitives
+from bilinear_package.src.random_tensor import createRandomTensor
 
 
 def ttRoundingWithRanks(tt_tensors: typing.List[np.array], desired_ranks: typing.List[int]):
@@ -62,11 +63,10 @@ def orthogonalizeThenRandomize(tt_tensors: typing.List[np.array], desired_ranks:
     return answer
 
 
-def randomizeThenOrthogonalize(tt_tensors: typing.List[np.array], desired_ranks: typing.List[int]):
+def randomizeThenOrthogonalize(tt_tensors: typing.List[np.array], random_tensor: typing.List[int]):
     modes = []
     for tt in tt_tensors:
         modes.append(tt.shape[1])
-    random_tensor = random_tensor.createRandomTensor(modes, desired_ranks)
     # print(random_tensor)
     contractions = contraction.partialContractionsRL(tt_tensors, random_tensor)
     answer = tt_tensors.copy()

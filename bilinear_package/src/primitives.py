@@ -1,5 +1,6 @@
 import typing
 import numpy as np
+import logging
 
 
 def countTensor(tt_tensors: typing.List[np.array]):
@@ -11,6 +12,7 @@ def countTensor(tt_tensors: typing.List[np.array]):
 
 def frob(tensor: np.array):
     return np.sqrt(np.sum(tensor * tensor))
+
 
 def makeHorizontalUnfolding(tensor: np.array):
     return np.reshape(np.einsum('ijk->ikj', tensor), (tensor.shape[0], -1), order='F')
@@ -81,3 +83,17 @@ def directSum(first: typing.List[np.ndarray], second: typing.List[np.ndarray]):
     for i in range(len(first)):
         answer.append(formSumTensor(first[i], second[i]))
     return answer
+
+
+def tensorsRelativeComparance(first: np.ndarray, second: np.ndarray):
+    return np.linalg.norm((first - second).flatten()) / np.sqrt(np.linalg.norm(first.flatten()) * np.linalg.norm(second.flatten()))
+
+
+def ttTensorsRelativeComparance(first: np.ndarray, second: np.ndarray):
+    sp1 = scalarProduct(first, first)
+    sp2 = scalarProduct(second, second)
+    sp = scalarProduct(first, second)
+    logging.warning(sp1)
+    logging.warning(sp2)
+    logging.warning(sp)
+    return np.sqrt(sp1 + sp2 - 2 * sp) / np.sqrt(np.sqrt(sp1) * np.sqrt(sp2))

@@ -1,0 +1,56 @@
+============================= test session starts ==============================
+platform linux -- Python 3.8.10, pytest-7.1.2, pluggy-1.0.0
+rootdir: /home/divanik/Desktop/CourseWork/Randomized_tensor_bilinear_operations
+collected 12 items / 7 deselected / 5 selected
+
+bilinear_package/tests/test_hadamard_product.py ....F                    [100%]
+
+=================================== FAILURES ===================================
+________________ test_approximate_hadamard_product_correctness _________________
+
+    def test_approximate_hadamard_product_correctness():
+        for _ in range(10):
+            modes = np.random.randint(10, size=4) + 2
+            desired_ranks1 = np.random.randint(5, size=3) + 1
+            random_tensor1 = createExampleTensor(
+                modes, desired_ranks1, variance=1)
+            desired_ranks2 = np.random.randint(5, size=3) + 1
+            random_tensor2 = createExampleTensor(
+                modes, desired_ranks2, variance=1)
+            desired_ranks = np.random.randint(6, size=3) + 2
+            random_tensor = createRandomTensor(modes, desired_ranks)
+            product1 = hadamard_product.approximateHadamardProduct(
+                random_tensor1, random_tensor2, random_tensor)
+            print(primitives.countTensor(product1).shape)
+            product2 = hadamard_product.preciseHadamardProduct(
+                random_tensor1, random_tensor2)
+            print(primitives.countTensor(product2).shape)
+            kek = rounding.randomizeThenOrthogonalize(product2, random_tensor)
+            print(primitives.countTensor(kek).shape)
+            logging.warning(len(product1))
+            logging.warning(len(kek))
+>           assert primitives.ttTensorsRelativeComparance(product1, kek) < 1
+E           assert nan < 1
+E            +  where nan = <function ttTensorsRelativeComparance at 0x7f44dc369280>([array([[[-0.74905232, -0.46600583,  0.23045406,  0.22323692,\n         -0.34352263,  0.02841813],\n        [ 0.44523658...e-14]],\n\n       [[-6.39488462e-14],\n        [ 5.50670620e-14],\n        [ 4.88498131e-14],\n        [ 1.11022302e-14]]])], [array([[[-0.74905232, -0.46600583,  0.23045406,  0.22323692,\n         -0.34352263,  0.02841813],\n        [ 0.44523658...e-14]],\n\n       [[ 4.55746552e-14],\n        [-6.17284002e-14],\n        [-5.94524430e-14],\n        [-6.66133815e-16]]])])
+E            +    where <function ttTensorsRelativeComparance at 0x7f44dc369280> = primitives.ttTensorsRelativeComparance
+
+bilinear_package/tests/test_hadamard_product.py:115: AssertionError
+----------------------------- Captured stdout call -----------------------------
+(6, 11, 7, 4)
+(6, 11, 7, 4)
+(6, 11, 7, 4)
+------------------------------ Captured log call -------------------------------
+WARNING  root:test_hadamard_product.py:113 4
+WARNING  root:test_hadamard_product.py:114 4
+WARNING  root:primitives.py:96 167077.85135989037
+WARNING  root:primitives.py:97 167077.85135989013
+WARNING  root:primitives.py:98 167077.8513598903
+=============================== warnings summary ===============================
+bilinear_package/tests/test_hadamard_product.py::test_approximate_hadamard_product_correctness
+  /home/divanik/Desktop/CourseWork/Randomized_tensor_bilinear_operations/bilinear_package/src/primitives.py:99: RuntimeWarning: invalid value encountered in sqrt
+    return np.sqrt(sp1 + sp2 - 2 * sp) / np.sqrt(np.sqrt(sp1) * np.sqrt(sp2))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED bilinear_package/tests/test_hadamard_product.py::test_approximate_hadamard_product_correctness
+============= 1 failed, 4 passed, 7 deselected, 1 warning in 1.39s =============

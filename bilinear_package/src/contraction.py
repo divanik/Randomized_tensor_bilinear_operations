@@ -1,4 +1,5 @@
 import typing
+import logging
 import numpy as np
 
 
@@ -23,13 +24,35 @@ def partialContractionsLR(tt_tensors1: typing.List[np.array], tt_tensors2: typin
     return answer
 
 
+def cronMulVecR(a: np.array, b: np.array, c: np.array):
+    p = np.einsum('dbe,cel->dbcl', b, c)
+    return np.einsum('abc,dbcl->adbl', a, p)
+
+
+def cronMulVecL(a: np.array, b: np.array, c: np.array):
+    p = np.einsum('ebd,cel->dbcl', b, c)
+    return np.einsum('cba,dbcl->adbl', a, p)
+
+
+def cronMulVecReduceModeR(a: np.array, b: np.array, c: np.array):
+    p = np.einsum('dbe,cebl->dcbl', b, c)
+    return np.einsum('abc,dcbl->adl', a, p)
+
+
+def cronMulVecReduceModeL(a: np.array, b: np.array, c: np.array):
+    logging.warning(a.shape)
+    logging.warning(b.shape)
+    logging.warning(c.shape)
+    p = np.einsum('ebd,cebl->cdbl', b, c)
+    return np.einsum('cba,cdbl->adl', a, p)
+
+
 def partialContractionsRLKronecker(tt_tensors1L: typing.List[np.array], tt_tensors1R: typing.List[np.array], tt_tensors2: typing.List[np.array]):
     answer = []
     last = np.ones((1, 1, 1))
     for idx, tt1L, tt1R, tt2 in (zip(reversed(range(len(tt_tensors1L))), reversed(tt_tensors1L), reversed(tt_tensors1R), reversed(tt_tensors2))):
         if idx > 0:
-            p = np.einsum('lzk,bdk->bdzk', tt2, last)
-            p = np.einsum('czd,bdzk->bczk', tt1R, p)
-            last = np.einsum('azb,bczk->ack', tt1L, p)
+            p = cronMulVecR(tt1L, tt1R, last)
+            last = np.einsum('ldu,abdu->abl', tt2, p)
             answer.append(last.copy())
     return list(reversed(answer))
