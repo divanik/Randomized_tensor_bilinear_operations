@@ -58,7 +58,8 @@ def scalarProduct(first: typing.List[np.ndarray], second: typing.List[np.ndarray
     current_tensor = np.einsum('ijk, ljm -> ilkm', first[0], second[0])
     for i in range(1, len(first)):
         current_tensor = np.einsum('ijkl,kmn->ijlmn', current_tensor, first[i])
-        current_tensor = np.einsum('ijlmn,lmp->ijnp', current_tensor, first[i])
+        current_tensor = np.einsum(
+            'ijlmn,lmp->ijnp', current_tensor, second[i])
     return current_tensor[0, 0, 0, 0]
 
 
@@ -93,7 +94,4 @@ def ttTensorsRelativeComparance(first: np.ndarray, second: np.ndarray):
     sp1 = scalarProduct(first, first)
     sp2 = scalarProduct(second, second)
     sp = scalarProduct(first, second)
-    logging.warning(sp1)
-    logging.warning(sp2)
-    logging.warning(sp)
-    return np.sqrt(sp1 + sp2 - 2 * sp) / np.sqrt(np.sqrt(sp1) * np.sqrt(sp2))
+    return (sp1 + sp2 - 2 * sp) / (np.sqrt(sp1) * np.sqrt(sp2))

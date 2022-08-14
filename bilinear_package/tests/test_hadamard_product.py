@@ -1,25 +1,8 @@
-from itertools import count
-from statistics import variance
 import numpy as np
 from bilinear_package.src import hadamard_product, contraction, primitives
 from bilinear_package.src.random_tensor import createRandomTensor, createExampleTensor
 from bilinear_package.src import rounding
 import logging
-
-# t0 = np.array([[[4, 5, 6], [-4, 7, 8], [1, -4, 5]]])
-
-# t1 = np.array([[[2, 3, 4], [5, 2, 8]], [[1, -4, 1],
-#               [1, -2, 0]], [[6, -4, -3], [4, 2, -7]]])
-
-# t2 = np.array([[[-2], [9], [-1]], [[9], [-10], [1]], [[1], [4], [2]]])
-
-# print(t0.shape)
-# print(t1.shape)
-# print(t2.shape)
-
-# tt = [t0, t1, t2]
-
-# tt2 = [t2, t1, t0]
 
 
 def test_precise_hadamard_product_running_correctness():
@@ -73,7 +56,7 @@ def test_partial_contraction_kronecker():
             kek = matricesRL2[i].reshape(
                 (-1, matricesRL2[i].shape[2]), order='C')
             assert primitives.tensorsRelativeComparance(
-                kek, matricesRL1[i]) < 1e-10
+                kek, matricesRL1[i]) < 1e-5
 
 
 def test_approximate_hadamard_product_running_correctness():
@@ -112,4 +95,4 @@ def test_approximate_hadamard_product_correctness():
         print(primitives.countTensor(kek).shape)
         logging.warning(len(product1))
         logging.warning(len(kek))
-        assert primitives.ttTensorsRelativeComparance(product1, kek) < 1
+        assert primitives.ttTensorsRelativeComparance(product1, kek) < 1e-4

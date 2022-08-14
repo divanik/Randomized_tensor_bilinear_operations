@@ -64,10 +64,6 @@ def orthogonalizeThenRandomize(tt_tensors: typing.List[np.array], desired_ranks:
 
 
 def randomizeThenOrthogonalize(tt_tensors: typing.List[np.array], random_tensor: typing.List[int]):
-    modes = []
-    for tt in tt_tensors:
-        modes.append(tt.shape[1])
-    # print(random_tensor)
     contractions = contraction.partialContractionsRL(tt_tensors, random_tensor)
     answer = tt_tensors.copy()
     for idx in range(len(tt_tensors) - 1):

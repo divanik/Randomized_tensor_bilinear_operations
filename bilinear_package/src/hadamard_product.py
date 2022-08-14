@@ -1,7 +1,7 @@
 import typing
 import logging
 import numpy as np
-from bilinear_package.src.contraction import cronMulVecL, partialContractionsRLKronecker, cronMulVecR, cronMulVecReduceModeL, cronMulVecReduceModeR
+from bilinear_package.src.contraction import cronMulVecL, partialContractionsRLKronecker
 from bilinear_package.src.random_tensor import createRandomTensor
 
 
@@ -10,14 +10,13 @@ def preciseHadamardProduct(tt_tensors1: typing.List[np.array], tt_tensors2: typi
     for i in range(len(tt_tensors1)):
         a, b = tt_tensors1[i], tt_tensors2[i]
         result_kernel = np.zeros(
-            (a.shape[0] * b.shape[0], a.shape[1], a.shape[2] * b.shape[2]))
+            (a.shape[0] * b.shape[0], a.shape[1], a.shape[2] * b.shape[2]), dtype=np.complex64)
         for i in range(a.shape[1]):
             result_kernel[:, i, :] = np.kron(a[:, i, :], b[:, i, :])
         answer.append(result_kernel)
     return answer
 
 
-# def approximateHadamardProduct(tt_tensors1: typing.List[np.array], tt_tensors2: typing.List[np.array], desired_ranks: typing.List[np.int32]):
 def approximateHadamardProduct(tt_tensors1: typing.List[np.array], tt_tensors2: typing.List[np.array], random_tensor: np.array):
     answer = []
     modes = []
@@ -42,8 +41,6 @@ def approximateHadamardProduct(tt_tensors1: typing.List[np.array], tt_tensors2: 
 
         y = full.reshape((-1, full.shape[-1]), order='F')
         q, _ = np.linalg.qr(y)
-        # logging.warning(y.shape)
-        # logging.warning(q.shape)
         ans = q.reshape(full.shape[:-1] + (q.shape[1],), order='F')
         answer.append(ans)
         luls = np.einsum('abc,deba->dec', ans, z)
