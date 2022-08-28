@@ -1,6 +1,6 @@
 import typing
 import numpy as np
-from bilinear_package.src import contraction, primitives, random_tensor
+from bilinear_package.src import contraction, primitives, random_tensor_generation
 
 
 def roundingSumRandThenOrth(tt_tensors1: typing.List[np.array], tt_tensors2: typing.List[np.array], desired_ranks: typing.List[int]):
@@ -11,16 +11,11 @@ def roundingSumRandThenOrth(tt_tensors1: typing.List[np.array], tt_tensors2: typ
     modes = []
     for tt in tt_tensors1:
         modes.append(tt.shape[1])
-    # print(modes)
     random_tensor = random_tensor.createRandomTensor(modes, desired_ranks)
     contractions1 = contraction.partialContractionsRL(
         tt_tensors1, random_tensor)
     contractions2 = contraction.partialContractionsRL(
         tt_tensors2, random_tensor)
-    # print(contractions1[0].shape)
-    # print(contractions1[1].shape)
-    # print(contractions2[0].shape)
-    # print(contractions2[1].shape)
     for idx in range(size - 1):
         shape = tt_tensors1_mut[idx].shape
         m1 = primitives.makeVerticalUnfolding(tt_tensors1_mut[idx])

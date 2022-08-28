@@ -67,6 +67,10 @@ def countFrobeniusDistance(first: typing.List[np.ndarray], second: typing.List[n
     return np.sqrt(scalarProduct(first, first) + scalarProduct(second, second) - 2 * scalarProduct(first, second))
 
 
+def countFrobeniusNorm(first: typing.List[np.ndarray]):
+    return np.sqrt(scalarProduct(first, first))
+
+
 def countFrobeniusDistanceSlow(first: typing.List[np.ndarray], second: typing.List[np.ndarray]):
     return frob(countTensor(first) - countTensor(second))
 
@@ -90,8 +94,22 @@ def tensorsRelativeComparance(first: np.ndarray, second: np.ndarray):
     return np.linalg.norm((first - second).flatten()) / np.sqrt(np.linalg.norm(first.flatten()) * np.linalg.norm(second.flatten()))
 
 
-def ttTensorsRelativeComparance(first: np.ndarray, second: np.ndarray):
+def ttTensorsRelativeComparance(first: typing.List[np.ndarray], second: typing.List[np.ndarray]):
     sp1 = scalarProduct(first, first)
     sp2 = scalarProduct(second, second)
     sp = scalarProduct(first, second)
-    return (sp1 + sp2 - 2 * sp) / (np.sqrt(sp1) * np.sqrt(sp2))
+    return np.sqrt((sp1 + sp2 - 2 * sp) / (np.sqrt(sp1) * np.sqrt(sp2)))
+
+
+def ttTensorsUnsymmetricalRelativeComparance(result: typing.List[np.ndarray], reference: typing.List[np.ndarray]):
+    sp1 = scalarProduct(result, result)
+    sp2 = scalarProduct(reference, reference)
+    sp = scalarProduct(result, reference)
+    return np.sqrt((sp1 + sp2 - 2 * sp) / sp2)
+
+
+def countModes(tt_tensors: typing.List[np.ndarray]):
+    modes = []
+    for tensor in tt_tensors:
+        modes.append(tensor.shape[1])
+    return modes

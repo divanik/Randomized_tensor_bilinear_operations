@@ -1,6 +1,6 @@
 import numpy as np
 from bilinear_package.src import hadamard_product, contraction, primitives
-from bilinear_package.src.random_tensor import createRandomTensor, createExampleTensor
+from bilinear_package.src.random_tensor_generation import createRandomTensor, createExampleTensor
 from bilinear_package.src import rounding
 import logging
 

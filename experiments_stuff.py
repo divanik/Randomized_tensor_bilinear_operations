@@ -1,18 +1,18 @@
-from bilinear_package.src import random_tensor
+from bilinear_package.src import random_tensor_generation
 from collections import defaultdict
 import pandas as pd
 
 
-def get_tensor_for_experiment(n: int, d: int, r: int, variance: float):
+def get_tensor_for_experiment(n: int, d: int, r: int, variance: float, seed: int):
     modes = [d for _ in range(n)]
     ranks = [r for _ in range(n - 1)]
-    return random_tensor.createExampleTensor(modes, ranks, variance=variance)
+    return random_tensor_generation.createExampleTensor(modes, ranks, variance=variance, seed=seed)
 
 
-def get_random_tensor_for_experiment(n: int, d: int, r: int):
+def get_random_tensor_for_experiment(n: int, d: int, r: int, seed: int):
     modes = [d for _ in range(n)]
     ranks = [r for _ in range(n - 1)]
-    return random_tensor.createRandomTensor(modes, ranks)
+    return random_tensor_generation.createRandomTensor(modes, ranks, seed=seed)
 
 
 def default_dict_to_seaborn_plot(results: defaultdict):

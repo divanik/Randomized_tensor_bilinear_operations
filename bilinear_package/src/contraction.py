@@ -8,7 +8,6 @@ def partialContractionsRL(tt_tensors1: typing.List[np.array], tt_tensors2: typin
     last = np.ones((1, 1))
     for idx, tt1, tt2 in (zip(reversed(range(len(tt_tensors1))), reversed(tt_tensors1), reversed(tt_tensors2))):
         if idx > 0:
-            # print(idx)
             last = np.einsum('ijk,kl,mjl->im', tt1, last, tt2)
             answer.append(last.copy())
     return list(reversed(answer))
@@ -40,9 +39,6 @@ def cronMulVecReduceModeR(a: np.array, b: np.array, c: np.array):
 
 
 def cronMulVecReduceModeL(a: np.array, b: np.array, c: np.array):
-    logging.warning(a.shape)
-    logging.warning(b.shape)
-    logging.warning(c.shape)
     p = np.einsum('ebd,cebl->cdbl', b, c)
     return np.einsum('cba,cdbl->adl', a, p)
 

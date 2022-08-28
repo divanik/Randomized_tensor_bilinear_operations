@@ -1,7 +1,7 @@
 import typing
 import numpy as np
 from bilinear_package.src import orthogonalize, contraction, primitives
-from bilinear_package.src.random_tensor import createRandomTensor
+from bilinear_package.src.random_tensor_generation import createRandomTensor
 
 
 def ttRoundingWithRanks(tt_tensors: typing.List[np.array], desired_ranks: typing.List[int]):
@@ -66,14 +66,19 @@ def orthogonalizeThenRandomize(tt_tensors: typing.List[np.array], desired_ranks:
 def randomizeThenOrthogonalize(tt_tensors: typing.List[np.array], random_tensor: typing.List[int]):
     contractions = contraction.partialContractionsRL(tt_tensors, random_tensor)
     answer = tt_tensors.copy()
+    print(contractions)
     for idx in range(len(tt_tensors) - 1):
         z = primitives.makeVerticalUnfolding(answer[idx])
         shape = answer[idx].shape
         y = z @ contractions[idx]
+        print(z)
+        print("Y: ", y)
         y, _ = np.linalg.qr(y)
+        print("Q: ", y)
         answer[idx] = primitives.fromVerticalUnfolding(
             y, (shape[0], shape[1], y.shape[1]))
         m = y.T @ z
+        print("M: ", m)
         answer[idx + 1] = np.einsum('ij, jkl->ikl', m, answer[idx + 1])
     return answer
 
