@@ -1,4 +1,3 @@
-import imp
 import typing
 import logging
 import numpy as np
@@ -23,11 +22,11 @@ def generalizedApproximateHadamardProduct(tt_tensors1: typing.List[np.array], tt
     answer = []
     contractions = partialContractionsRLKronecker(
         tt_tensors1L=tt_tensors1, tt_tensors1R=tt_tensors2, tt_tensors2=random_tensor)
-    luls = np.ones((1, 1, 1))
+    left_tensor = np.ones((1, 1, 1))
     size = len(tt_tensors1)
 
     for i in range(size):
-        z = cronMulVecL(tt_tensors1[i], tt_tensors2[i], luls)
+        z = cronMulVecL(tt_tensors1[i], tt_tensors2[i], left_tensor)
         z = func(z)
         if i == size - 1:
             ans = np.transpose(z, (3, 2, 1, 0))
@@ -40,11 +39,11 @@ def generalizedApproximateHadamardProduct(tt_tensors1: typing.List[np.array], tt
         q, _ = np.linalg.qr(y)
         ans = q.reshape(full.shape[:-1] + (q.shape[1],), order='F')
         answer.append(ans)
-        luls = np.einsum('abc,deba->dec', ans, z)
+        left_tensor = np.einsum('abc,deba->dec', ans, z)
     return answer
 
 
-def approximateHadamardProduct(tt_tensors1: typing.List[np.array], tt_tensors2: typing.List[np.array], desired_ranks: typing.List[int]):
+def approximateHadamardProduct(tt_tensors1: typing.List[np.array], tt_tensors2: typing.List[np.array], desired_ranks: typing.List[int], seed: int):
     modes = primitives.countModes(tt_tensors1)
-    random_tensor = createRandomTensor(modes, desired_ranks)
+    random_tensor = createRandomTensor(modes, desired_ranks, seed=seed)
     return generalizedApproximateHadamardProduct(tt_tensors1, tt_tensors2, random_tensor)

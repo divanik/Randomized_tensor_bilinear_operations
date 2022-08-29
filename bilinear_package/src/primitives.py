@@ -105,7 +105,7 @@ def ttTensorsUnsymmetricalRelativeComparance(result: typing.List[np.ndarray], re
     sp1 = scalarProduct(result, result)
     sp2 = scalarProduct(reference, reference)
     sp = scalarProduct(result, reference)
-    return np.sqrt((sp1 + sp2 - 2 * sp) / sp2)
+    return np.sqrt(np.abs(sp1 + sp2 - 2 * sp) / sp2)
 
 
 def countModes(tt_tensors: typing.List[np.ndarray]):

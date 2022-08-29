@@ -1,1 +1,1 @@
-from bilinear_package.tests import test_bilinear_operations, test_contraction, test_orthogonalize, test_rounding, test_primitives, test_hadamard_product
+from bilinear_package.tests import test_contraction, test_orthogonalize, test_rounding, test_primitives, test_hadamard_product

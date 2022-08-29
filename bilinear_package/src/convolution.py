@@ -1,8 +1,8 @@
-from threading import main_thread
 import typing
 import numpy as np
 from bilinear_package.src import contraction, primitives, hadamard_product
 from bilinear_package.src.random_tensor_generation import createRandomTensor
+import logging
 
 
 def countFourier(tt_tensor: typing.List[np.ndarray]):
@@ -43,3 +43,32 @@ def approximateCycleConvolution(tt_tensors1: typing.List[np.ndarray], tt_tensors
     modes = primitives.countModes(tt_tensors1)
     random_tensor = createRandomTensor(modes, desired_ranks, seed)
     return hadamard_product.generalizedApproximateHadamardProduct(countFourier(tt_tensors1), countFourier(tt_tensors2), countInverseFourier(random_tensor), lambda z: np.fft.ifft(z, axis=2))
+
+
+def paddingForConvolutionKernels(tt_kernel1: np.ndarray, tt_kernel2: np.ndarray):
+    s = tt_kernel1.shape[1] + tt_kernel2.shape[1] - 1
+    answer1 = np.zeros(
+        (tt_kernel1.shape[0], s, tt_kernel1.shape[2]))
+    answer1[:, : tt_kernel1.shape[1], :] = tt_kernel1
+    answer2 = np.zeros(
+        (tt_kernel2.shape[0], s, tt_kernel2.shape[2]))
+    answer2[:, : tt_kernel2.shape[1], :] = tt_kernel2
+    return answer1, answer2
+
+
+def paddingForConvolutionTTTensors(tt_tensors1: typing.List[np.ndarray], tt_tensors2: typing.List[np.ndarray]):
+    answer = list(map(lambda x: paddingForConvolutionKernels(
+        x[0], x[1]), zip(tt_tensors1, tt_tensors2)))
+    return [x[0] for x in answer], [x[1] for x in answer]
+
+
+def approximateConvolution(tt_tensors1: typing.List[np.ndarray], tt_tensors2: typing.List[np.ndarray], desired_ranks: typing.List[int], seed: int):
+    tt_tensors1_, tt_tensors2_ = paddingForConvolutionTTTensors(
+        tt_tensors1, tt_tensors2)
+    return approximateCycleConvolution(tt_tensors1_, tt_tensors2_, desired_ranks, seed)
+
+
+def preciseConvolution(tt_tensors1: typing.List[np.ndarray], tt_tensors2: typing.List[np.ndarray]):
+    tt_tensors1_, tt_tensors2_ = paddingForConvolutionTTTensors(
+        tt_tensors1, tt_tensors2)
+    return preciseCycleConvolution(tt_tensors1_, tt_tensors2_)

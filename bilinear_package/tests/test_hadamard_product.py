@@ -5,33 +5,6 @@ from bilinear_package.src import rounding
 import logging
 
 
-def test_precise_hadamard_product_running_correctness():
-    for _ in range(100):
-        modes = np.random.randint(10, size=10) + 2
-        desired_ranks1 = np.random.randint(5, size=9) + 1
-        random_tensor1 = list(map(lambda x: x * 1000, createRandomTensor(
-            modes, desired_ranks1)))
-        desired_ranks2 = np.random.randint(5, size=9) + 1
-        random_tensor2 = list(map(lambda x: x * 1000, createRandomTensor(
-            modes, desired_ranks2)))
-        hadamard_product.preciseHadamardProduct(random_tensor1, random_tensor2)
-
-
-def test_precise_hadamard_product_correctness():
-    for _ in range(1000):
-        modes = np.random.randint(10, size=3) + 2
-        desired_ranks1 = np.random.randint(5, size=2) + 1
-        random_tensor1 = createExampleTensor(
-            modes, desired_ranks1, variance=100)
-        desired_ranks2 = np.random.randint(5, size=2) + 1
-        random_tensor2 = createExampleTensor(
-            modes, desired_ranks2, variance=100)
-        honest_hadamard_product = primitives.countTensor(
-            random_tensor1) * primitives.countTensor(random_tensor2)
-        assert primitives.tensorsRelativeComparance(
-            primitives.countTensor(hadamard_product.preciseHadamardProduct(random_tensor1, random_tensor2)), honest_hadamard_product)
-
-
 def test_partial_contraction_kronecker():
     for _ in range(100):
         modes = np.random.randint(10, size=10) + 2
