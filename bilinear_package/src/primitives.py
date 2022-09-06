@@ -113,3 +113,24 @@ def countModes(tt_tensors: typing.List[np.ndarray]):
     for tensor in tt_tensors:
         modes.append(tensor.shape[1])
     return modes
+
+
+def twoSidedPaddingTTTensor(tt_tensors: typing.List[np.ndarray], padding: typing.List[typing.Tuple[int]]):
+    assert len(tt_tensors) == len(padding)
+    answer = []
+    for i in range(len(tt_tensors)):
+        kernel = np.zeros((tt_tensors[i].shape[0], padding[i][0] +
+                          tt_tensors[i].shape[1] + padding[i][1], tt_tensors[i].shape[2]))
+        kernel[:, padding[i][0]:-padding[i][1], :] = tt_tensors[i]
+        answer.append(kernel)
+    return answer
+
+
+def twoSidedCuttingTTTensor(tt_tensors: typing.List[np.ndarray], cutting: typing.List[typing.Tuple[int]]):
+    assert len(tt_tensors) == len(cutting)
+    answer = []
+    for i in range(len(tt_tensors)):
+        kernel = tt_tensors[i][:, cutting[i][0]: -cutting[i][1], :]
+        answer.append(kernel)
+    return answer
+
