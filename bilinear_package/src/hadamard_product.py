@@ -33,7 +33,7 @@ def generalizedApproximateHadamardProduct(tt_tensors1: typing.List[np.array], tt
             ans = np.reshape(ans, (ans.shape[0], ans.shape[1], 1))
             answer.append(ans)
             return answer
-        full = np.einsum('abcd,abe->dce', z, contractions[i])
+        full = np.einsum('abcd,abe->dce', z, contractions[i + 1])
 
         y = full.reshape((-1, full.shape[-1]), order='F')
         q, _ = np.linalg.qr(y)

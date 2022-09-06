@@ -47,8 +47,7 @@ def partialContractionsRLKronecker(tt_tensors1L: typing.List[np.array], tt_tenso
     answer = []
     last = np.ones((1, 1, 1))
     for idx, tt1L, tt1R, tt2 in (zip(reversed(range(len(tt_tensors1L))), reversed(tt_tensors1L), reversed(tt_tensors1R), reversed(tt_tensors2))):
-        if idx > 0:
-            p = cronMulVecR(tt1L, tt1R, last)
-            last = np.einsum('ldu,abdu->abl', tt2, p)
-            answer.append(last.copy())
+        p = cronMulVecR(tt1L, tt1R, last)
+        last = np.einsum('ldu,abdu->abl', tt2, p)
+        answer.append(last.copy())
     return list(reversed(answer))
